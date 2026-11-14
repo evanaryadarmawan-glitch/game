@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahadipa 2026 | Game Makrab Universitas STEKOM</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Latar partikel ambient (dekorasi, non-interaktif) -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="bg-fx-stars"></div>
+    <div class="bg-fx-glow bg-fx-glow-1"></div>
+    <div class="bg-fx-glow bg-fx-glow-2"></div>
+  </div>
+
+  <!-- Kontrol suara Steko + Backsound -->
+  <button id="btn-voice-toggle" class="voice-toggle" title="Suara Steko" aria-label="Toggle suara">
+    <span class="voice-icon" id="voice-icon">🔊</span>
+  </button>
+  <button id="btn-music-toggle" class="music-toggle" title="Backsound" aria-label="Toggle musik">
+    <span class="music-icon" id="music-icon">🎵</span>
+  </button>
+
+  <!-- Bot mengambang, tampil di beberapa layar -->
+  <div id="bot-float" class="bot-float hidden">
+    <div class="bot-body">
+      <div class="bot-antenna"><span></span></div>
+      <div class="bot-face">
+        <div class="bot-eyes">
+          <div class="bot-eye"></div>
+          <div class="bot-eye"></div>
+        </div>
+        <div class="bot-mouth"></div>
+      </div>
+    </div>
+    <div class="bot-shadow"></div>
+  </div>
+
+  <div id="app">
+    <!-- Loading -->
+    <div id="screen-loading" class="screen active">
+      <div class="loader">
+        <div class="loader-ring"></div>
+        <h1 class="logo-text">MAHADIPA <span>2026</span></h1>
+        <p>Universitas STEKOM</p>
+        <p class="loading-text" id="loading-text">Memuat petualangan...</p>
+        <div class="loader-bar"><span id="loader-bar-fill"></span></div>
+        <button id="btn-start-app" class="btn btn-primary btn-lg btn-start-app hidden">Mulai Petualangan 🚀</button>
+        <a href="#" id="btn-switch-player" class="switch-player hidden">Bukan kamu? Ganti pemain</a>
+        <p class="loading-hint hidden" id="loading-hint">Nyalakan suara perangkatmu agar Steko bisa bicara 🔊</p>
+      </div>
+    </div>
+
+    <!-- Selamat Datang: Steko menyambut -->
+    <div id="screen-welcome" class="screen">
+      <div class="story-container">
+        <div class="flow-steps" id="flow-steps-welcome">
+          <span class="flow-step active">1. Sapa</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">2. Data</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">3. Intro</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">4. Main</span>
+        </div>
+        <div class="chapter-tag" id="chapter-tag-welcome">📖 Prolog</div>
+        <div class="character">
+          <div class="char-avatar-wrap">
+            <div class="char-avatar" id="welcome-avatar">
+              <div class="avatar-antenna"><span></span></div>
+              <div class="avatar-face">
+                <div class="avatar-eyes"><div class="avatar-eye"></div><div class="avatar-eye"></div></div>
+                <div class="avatar-mouth"></div>
+              </div>
+            </div>
+            <div class="speaking-badge hidden" id="speaking-badge-welcome">
+              <div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+              <span class="speaking-label">Steko berbicara</span>
+            </div>
+          </div>
+          <div class="char-name">Steko</div>
+          <div class="char-role">Pemandu Mahadipa 2026</div>
+        </div>
+        <div class="dialogue-box">
+          <p id="welcome-text"></p>
+          <div class="dialogue-actions">
+            <button id="btn-welcome-next" class="btn btn-primary">Lanjut</button>
+            <button type="button" class="btn btn-ghost btn-replay-voice" data-target="welcome" title="Ulangi suara">🔁 Dengar lagi</button>
+          </div>
+        </div>
+        <div class="welcome-links">
+          <a href="#" id="go-board" class="admin-link-btn">🏆 Papan peringkat</a>
+          <a href="#" class="admin-link-btn js-go-admin">⚙️ Admin</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Papan Peringkat Publik -->
+    <div id="screen-dashboard" class="screen">
+      <div class="dash-wrap">
+        <header class="dash-header">
+          <div class="dash-brand">
+            <div class="dash-logo">🎓</div>
+            <div>
+              <h1>MAHADIPA <span>2026</span></h1>
+              <p>Papan Peringkat &middot; Universitas STEKOM</p>
+            </div>
+          </div>
+          <div class="dash-header-actions">
+            <span class="live-dot"></span><span class="live-label">Live</span>
+            <a href="#" id="go-welcome" class="admin-link-btn">← Awal</a>
+            <a href="#" class="admin-link-btn js-go-admin">⚙️ Admin</a>
+          </div>
+        </header>
+
+        <section class="dash-stats">
+          <div class="dstat-card">
+            <div class="dstat-icon">👥</div>
+            <div class="dstat-value" id="dash-total">0</div>
+            <div class="dstat-label">Total Peserta</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">✅</div>
+            <div class="dstat-value" id="dash-finished">0</div>
+            <div class="dstat-label">Sudah Selesai</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">📊</div>
+            <div class="dstat-value" id="dash-avg">0</div>
+            <div class="dstat-label">Rata-rata Skor</div>
+          </div>
+          <div class="dstat-card">
+            <div class="dstat-icon">❓</div>
+            <div class="dstat-value" id="dash-qcount">0</div>
+            <div class="dstat-label">Jumlah Soal</div>
+          </div>
+        </section>
+
+        <section class="dash-main">
+          <div class="dash-podium-card">
+            <h2>🏆 Podium Saat Ini</h2>
+            <div class="podium" id="dash-podium"></div>
+          </div>
+          <div class="dash-leader-card">
+            <h2>Papan Peringkat</h2>
+            <div class="leaderboard-list" id="dash-leaderboard-list"></div>
+          </div>
+        </section>
+
+        <div class="dash-cta">
+          <button id="btn-start-game" class="btn btn-primary btn-lg">Mulai Petualangan 🚀</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login -->
+    <div id="screen-login" class="screen">
+      <div class="login-card">
+        <div class="flow-steps flow-steps-compact" id="flow-steps-login">
+          <span class="flow-step done">1. Sapa</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step active">2. Data</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">3. Intro</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">4. Main</span>
+        </div>
+        <button class="btn-link-back" id="btn-login-back-dash">← Kembali</button>
+        <div class="logo-area">
+          <div class="logo-icon">🎓</div>
+          <h1>MAHADIPA <span>2026</span></h1>
+          <p class="subtitle">Petualangan Makrab Universitas STEKOM</p>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Masukkan nama kamu" required maxlength="40" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="prodi">Program Studi</label>
+            <select id="prodi" required>
+              <option value="">-- Pilih Prodi --</option>
+              <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+              <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+              <option value="S1 Sistem Komputer">S1 Sistem Komputer</option>
+              <option value="S1 Desain Komunikasi Visual">S1 Desain Komunikasi Visual (DKV)</option>
+              <option value="S1 Manajemen">S1 Manajemen</option>
+              <option value="S1 Bisnis">S1 Bisnis</option>
+              <option value="S1 Akuntansi">S1 Akuntansi</option>
+              <option value="S1 Hukum">S1 Hukum</option>
+              <option value="S1 Teknik Sipil">S1 Teknik Sipil</option>
+              <option value="S2 Manajemen & Kewirausahaan">S2 Manajemen & Kewirausahaan</option>
+              <option value="D4 Akuntansi Perpajakan">D4 Akuntansi Perpajakan</option>
+              <option value="D3 Teknik Informatika">D3 Teknik Informatika</option>
+              <option value="D3 Teknologi Komputer">D3 Teknologi Komputer</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Mulai Petualangan 🚀</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Intro Story -->
+    <div id="screen-intro" class="screen">
+      <div class="story-container">
+        <div class="flow-steps" id="flow-steps-intro">
+          <span class="flow-step done">1. Sapa</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step done">2. Data</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step active">3. Intro</span>
+          <span class="flow-dot"></span>
+          <span class="flow-step">4. Main</span>
+        </div>
+        <div class="chapter-tag" id="chapter-tag-intro">📖 Bab 1</div>
+        <div class="character">
+          <div class="char-avatar-wrap">
+            <div class="char-avatar" id="guide-avatar">
+              <div class="avatar-antenna"><span></span></div>
+              <div class="avatar-face">
+                <div class="avatar-eyes">
+                  <div class="avatar-eye"></div>
+                  <div class="avatar-eye"></div>
+                </div>
+                <div class="avatar-mouth"></div>
+              </div>
+            </div>
+            <div class="speaking-badge hidden" id="speaking-badge-intro">
+              <div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+              <span class="speaking-label">Steko berbicara</span>
+            </div>
+          </div>
+          <div class="char-name">Steko</div>
+          <div class="char-role">Pemandu Mahadipa</div>
+        </div>
+        <div class="dialogue-box">
+          <p id="dialogue-text"></p>
+          <div class="dialogue-actions">
+            <button id="btn-next-dialogue" class="btn btn-primary">Lanjut</button>
+            <button type="button" class="btn btn-ghost btn-replay-voice" data-target="intro" title="Ulangi suara">🔁 Dengar lagi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Dashboard Peserta -->
+    <div id="screen-player-dashboard" class="screen">
+      <div class="pd-wrap">
+        <header class="pd-header">
+          <div class="pd-player">
+            <div class="pd-avatar">🎓</div>
+            <div>
+              <div class="pd-name" id="pd-player-name">-</div>
+              <div class="pd-prodi" id="pd-player-prodi">-</div>
+            </div>
+          </div>
+          <div class="pd-stats">
+            <div class="pd-stat">
+              <span class="pd-stat-val" id="pd-score">0</span>
+              <span class="pd-stat-label">Skor</span>
+            </div>
+            <div class="pd-stat">
+              <span class="pd-stat-val" id="pd-progress">0 / 0</span>
+              <span class="pd-stat-label">Progres</span>
+            </div>
+          </div>
+          <button id="btn-pd-back" class="btn btn-secondary btn-sm">← Keluar</button>
+        </header>
+
+        <div id="pd-gate" class="pd-gate waiting">
+          <span class="pd-gate-icon">🤖</span>
+          <div>
+            <b id="pd-gate-title">Menunggu admin membuka soal</b>
+            <p id="pd-gate-text">Tetap di halaman ini. Begitu admin membuka soal, semua peserta mulai bersamaan.</p>
+          </div>
+          <button id="btn-tour" class="btn btn-secondary btn-sm">❓ Tanya Steko</button>
+        </div>
+
+        <div class="pd-intro">
+          <h2>Pilih Soal</h2>
+          <p>Setiap soal adalah sebuah pulau. Selesaikan pulau demi pulau lewat jembatan yang menghubungkannya. Jawab cepat = poin bonus!</p>
+        </div>
+
+        <div id="pd-question-grid" class="island-map"></div>
+
+        <div class="pd-footer">
+          <button id="btn-finish-all" class="btn btn-primary hidden">Selesaikan Petualangan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game / Quiz -->
+    <div id="screen-game" class="screen">
+      <header class="game-header">
+        <div class="player-info">
+          <span id="player-name-display">-</span>
+          <span class="prodi-badge" id="player-prodi-display">-</span>
+        </div>
+        <div id="timer-wrap" class="timer-wrap">
+          <span class="timer-icon">⏱</span>
+          <span id="timer-display">00:45</span>
+        </div>
+        <div id="streak-display" class="streak-display hidden" title="Jawaban benar beruntun">🔥 <span>0</span></div>
+        <div class="score-box">
+          <span class="score-label">Skor</span>
+          <span id="current-score">0</span>
+        </div>
+        <div class="progress-box">
+          <span id="progress-text">1 / 15</span>
+          <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
+      </header>
+
+      <div class="question-area">
+        <div id="stage-banner" class="stage-banner hidden">
+          <span class="stage-icon" id="stage-icon">🏝️</span>
+          <span class="stage-label" id="stage-label">Level 1 · Jelajah</span>
+        </div>
+        <div class="q-type" id="q-type">KUIS</div>
+        <h2 id="question-text">Pertanyaan muncul di sini...</h2>
+        <div id="question-media" class="q-media"></div>
+        <div id="options-container" class="options"></div>
+        <div id="puzzle-area" class="puzzle-area hidden"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="game-footer">
+        <button id="btn-submit" class="btn btn-primary hidden">Jawab</button>
+        <button id="btn-back-to-pd" class="btn btn-primary hidden">← Kembali ke Daftar Soal</button>
+        <button id="btn-next" class="btn btn-secondary hidden">Soal Berikutnya →</button>
+      </div>
+    </div>
+
+    <!-- Result + Podium -->
+    <div id="screen-result" class="screen">
+      <div class="result-container">
+        <h1 class="result-title">Petualangan Selesai! 🎉</h1>
+        <div class="final-score-card">
+          <div class="big-score" id="final-score">0</div>
+          <p>Poin</p>
+          <div class="stats-row">
+            <div><span id="final-correct">0</span><small>Benar</small></div>
+            <div><span id="final-total">0</span><small>Soal</small></div>
+            <div><span id="final-time">0s</span><small>Waktu</small></div>
+            <div><span id="final-max-streak">0</span><small>🔥 Max Streak</small></div>
+          </div>
+        </div>
+
+        <div class="podium-section">
+          <h2>🏆 Podium Mahadipa 2026</h2>
+          <div class="podium" id="podium"></div>
+        </div>
+
+        <div class="leaderboard-section">
+          <h3>Peringkat Lengkap</h3>
+          <div class="leaderboard-list" id="leaderboard-list"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="btn-play-again" class="btn btn-primary">Main Lagi</button>
+          <button id="btn-to-dashboard" class="btn btn-secondary">Ke Dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="screen-admin" class="screen">
+      <div class="admin-container">
+        <div id="admin-login-box" class="admin-login-box">
+          <h1>⚙️ Admin Panel</h1>
+          <p class="admin-sub">Masuk untuk mengelola peserta &amp; soal Mahadipa 2026</p>
+          <input type="password" id="admin-pass" placeholder="Password Admin">
+          <div class="admin-login-actions">
+            <button id="btn-admin-login" class="btn btn-primary">Masuk</button>
+            <button id="btn-back-home" class="btn btn-secondary">Kembali</button>
+          </div>
+        </div>
+
+        <div id="admin-dashboard" class="hidden">
+          <header class="admin-top">
+            <h1>⚙️ Admin Panel Mahadipa 2026</h1>
+            <button id="btn-logout-admin" class="btn btn-secondary btn-sm">Logout</button>
+          </header>
+
+          <nav class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="tab-overview">📊 Ringkasan</button>
+            <button class="admin-tab-btn" data-tab="tab-players">👥 Peserta</button>
+            <button class="admin-tab-btn" data-tab="tab-progress">📈 Progress Soal</button>
+            <button class="admin-tab-btn" data-tab="tab-questions">❓ Kelola Soal</button>
+          </nav>
+
+          <!-- TAB: OVERVIEW -->
+          <section id="tab-overview" class="admin-tab-panel active">
+            <div class="game-control" id="game-control">
+              <div>
+                <h3>🎮 Kontrol Soal</h3>
+                <p>Status: <b id="gc-status">Ditutup</b>. Peserta menunggu di dashboard sampai kamu membuka soal.</p>
+              </div>
+              <div class="game-control-actions">
+                <button id="btn-game-open" class="btn btn-primary">▶ Buka Soal (mulai serentak)</button>
+                <button id="btn-game-close" class="btn btn-secondary">⏸ Tutup Soal</button>
+              </div>
+            </div>
+            <div class="admin-stats">
+              <div class="stat-card"><span id="admin-total">0</span><small>Total Peserta</small></div>
+              <div class="stat-card"><span id="admin-finished">0</span><small>Selesai</small></div>
+              <div class="stat-card"><span id="admin-avg">0</span><small>Rata-rata Skor</small></div>
+              <div class="stat-card"><span id="admin-qtotal">0</span><small>Total Soal</small></div>
+            </div>
+            <div class="admin-actions">
+              <button id="btn-refresh-admin" class="btn btn-secondary">Refresh Data</button>
+              <button id="btn-reset-all" class="btn btn-danger">Reset Semua Peserta</button>
+            </div>
+          </section>
+
+          <!-- TAB: PLAYERS -->
+          <section id="tab-players" class="admin-tab-panel">
+            <div class="admin-table-wrap">
+              <table id="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nama</th>
+                    <th>Prodi</th>
+                    <th>Skor</th>
+                    <th>Benar</th>
+                    <th>Dijawab</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- TAB: QUESTIONS (CRUD) -->
+          <section id="tab-progress" class="admin-tab-panel">
+            <div class="progress-admin-toolbar">
+              <p class="admin-hint">Progress real-time: soal mana yang sudah dijawab tiap peserta. Sinkron otomatis.</p>
+              <button id="btn-refresh-progress" class="btn btn-secondary btn-sm">↻ Refresh</button>
+            </div>
+            <div class="progress-matrix-wrap">
+              <table id="progress-matrix" class="progress-matrix">
+                <thead id="progress-matrix-head"></thead>
+                <tbody id="progress-matrix-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="tab-questions" class="admin-tab-panel">
+            <div class="q-admin-toolbar">
+              <button id="btn-add-question" class="btn btn-primary">+ Tambah Soal</button>
+              <button id="btn-seed-questions" class="btn btn-secondary">Isi Soal Contoh (Seed)</button>
+              <button id="btn-replace-questions" class="btn btn-danger">Ganti Semua dengan Seed Baru</button>
+              <input type="text" id="q-search" class="q-search-input" placeholder="Cari soal / kategori...">
+            </div>
+            <div class="q-list" id="q-list"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Panduan Steko di dashboard -->
+    <div id="tour" class="tour hidden">
+      <div class="tour-box">
+        <div class="tour-bot">🤖</div>
+        <div class="tour-body">
+          <b>Steko</b>
+          <p id="tour-text"></p>
+          <div class="tour-actions">
+            <button id="tour-skip" class="btn btn-secondary btn-sm">Lewati</button>
+            <button id="tour-next" class="btn btn-primary btn-sm">Lanjut</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hitung mundur serentak -->
+    <div id="countdown-overlay" class="countdown-overlay hidden">
+      <div class="countdown-box">
+        <p>Soal dibuka! Bersiap berlayar...</p>
+        <div class="countdown-ring"><div id="countdown-num">3</div></div>
+        <p class="countdown-sub">Semua peserta mulai bersamaan</p>
+      </div>
+    </div>
+
+    <!-- Modal: Form Soal (Tambah/Edit) -->
+    <div id="question-modal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h2 id="q-modal-title">Tambah Soal</h2>
+        <form id="question-form">
+          <input type="hidden" id="qf-id">
+          <div class="form-group">
+            <label>Tipe Soal</label>
+            <select id="qf-type">
+              <option value="quiz">Pilihan Ganda (quiz)</option>
+              <option value="puzzle">Isian / Teka-teki (puzzle)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Kategori</label>
+            <input type="text" id="qf-category" placeholder="contoh: IT Dasar, Soft Skill, dll" required>
+          </div>
+          <div class="form-group">
+            <label>Pertanyaan</label>
+            <textarea id="qf-question" rows="2" required placeholder="Tulis pertanyaan di sini..."></textarea>
+          </div>
+
+          <div id="qf-quiz-fields">
+            <label>Opsi Jawaban (pilih radio untuk jawaban benar)</label>
+            <div class="qf-option-row"><input type="radio" name="qf-correct" value="0" checked><input type="text" class="qf-option-input" id="qf-opt-0" placeholder="Opsi A"></div>
+            <div class="qf-option-row"><input type="radio" name="qf-correct" value="1"><input type="text" class="qf-option-input" id="qf-opt-1" placeholder="Opsi B"></div>
+            <div class="qf-option-row"><input type="radio" name="qf-correct" value="2"><input type="text" class="qf-option-input" id="qf-opt-2" placeholder="Opsi C"></div>
+            <div class="qf-option-row"><input type="radio" name="qf-correct" value="3"><input type="text" class="qf-option-input" id="qf-opt-3" placeholder="Opsi D"></div>
+          </div>
+
+          <div id="qf-puzzle-fields" class="hidden">
+            <div class="form-group">
+              <label>Jawaban Benar (pisahkan dengan koma jika ada beberapa variasi)</label>
+              <input type="text" id="qf-answer-text" placeholder="contoh: STEKOM, KATA SANDI">
+            </div>
+            <div class="form-group">
+              <label>Petunjuk (opsional)</label>
+              <input type="text" id="qf-hint" placeholder="Petunjuk untuk peserta">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Durasi Timer (detik)</label>
+            <input type="number" id="qf-timelimit" min="10" max="300" value="45" required>
+            <small style="color:var(--muted)">Default 45 detik. Minimal 10, maksimal 300.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Berlaku untuk</label>
+            <select id="qf-rumpun">
+              <option value="umum">Semua prodi (umum)</option>
+              <option value="informatika">Teknik Informatika (S1 &amp; D3)</option>
+              <option value="sisfo">Sistem Informasi</option>
+              <option value="siskom">Sistem Komputer &amp; Teknologi Komputer</option>
+              <option value="dkv">Desain Komunikasi Visual</option>
+              <option value="manajemen">Manajemen, Bisnis &amp; S2 Manajemen</option>
+              <option value="akuntansi">Akuntansi &amp; Akuntansi Perpajakan</option>
+              <option value="hukum">Hukum</option>
+              <option value="sipil">Teknik Sipil</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Poin Dasar</label>
+            <input type="number" id="qf-points" min="5" max="50" value="10" required>
+            <small style="color:var(--muted)">Saran: mudah 10, sedang 15, sulit 20. Bonus kecepatan tetap +0 sampai +10.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Penjelasan Jawaban (muncul setelah peserta menjawab)</label>
+            <textarea id="qf-explanation" rows="2" placeholder="Penjelasan singkat..."></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">Simpan Soal</button>
+            <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/questions-seed.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
